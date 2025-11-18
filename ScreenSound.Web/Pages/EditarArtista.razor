@@ -1,0 +1,79 @@
+@page "/EditarArtista/{NomeArtista}"
+@inject ArtistaAPI artistasAPI
+@inject NavigationManager navigationManager
+@inject IJSRuntime JS
+
+
+<MudPaper Class="px-8 pt-2 pb-4 mx-12 my-8" Justify="Justify.Center">
+    <MudText Class="m-8" Typo="Typo.h4">Edição do Artista</MudText>
+    
+    <MudForm>
+        <MudTextField Class="mt-4" T="string" Placeholder="Nome do Artista"
+                      Variant="Variant.Outlined"
+                      @bind-Value="@nome"
+                      Required="true"
+                      RequiredError="Campo obrigatório"/>
+        
+        <MudTextField Class="mt-4" T="string" Placeholder="Biografia do Artista"
+                      Variant="Variant.Outlined"
+                      @bind-Value="@biografia"
+                      Lines="4"
+                      Required="true"
+                      RequiredError="Campo obrigatório"/>
+        
+        <div class="d-flex align-center justify-end mt-4">
+            <MudButton Variant="Variant.Filled"
+                       @onclick="Editar"
+                       Color="Color.Info"
+                       Class="me-2">
+                Salvar
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       @onclick="Deletar"
+                       Color="Color.Secondary"
+                       Class="me-2">
+                Deletar
+            </MudButton>
+            <MudButton Variant="Variant.Filled"
+                       @onclick="Voltar"
+                       Color="Color.Primary">
+                Voltar
+            </MudButton>
+        </div>
+    </MudForm>
+</MudPaper>
+@code {
+    private string? nome;
+    private string? biografia;
+    [Parameter]
+    public string? NomeArtista { get; set; }
+
+    public ArtistaResponse? Artista { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await JS.InvokeVoidAsync("console.log", $"NomeArtista recebido: {NomeArtista}");
+        
+        Artista = await artistasAPI.GetArtistaPorNomeAsync(NomeArtista!);
+        nome = Artista!.Nome;
+        biografia = Artista!.Bio;
+    }
+
+    private async Task Deletar()
+    {
+        await artistasAPI.DeleteArtistaAsync(Artista!.Id);
+        navigationManager.NavigateTo("/Artistas");
+    }
+
+    private async Task Voltar()
+    {
+        navigationManager.NavigateTo("/Artistas");
+    }
+
+    private async Task Editar()
+    {
+        var requestEdit = new ArtistaRequestEdit(Artista!.Id, nome!, biografia!, fotoPerfil:null);
+        await artistasAPI.UpdateArtistaAsync(requestEdit);
+        navigationManager.NavigateTo("/Artistas");
+    }
+}
