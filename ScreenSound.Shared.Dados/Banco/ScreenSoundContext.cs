@@ -12,8 +12,8 @@ public class ScreenSoundContext : IdentityDbContext<PessoaComAcesso, PerfilDeAce
     public DbSet<Musica> Musicas { get; set; } = null!;
     public DbSet<Genero> Generos { get; set; } = null!;
     
-    //private string connectionString = @"Data Source=localhost,1433;Initial Catalog=aluraV0;User Id=sa;Password=hUmV3bJjALTA9tWehwBh;Encrypt=False;TrustServerCertificate=True";
-    private string connectionString = "Server=screensound-server-murilo.database.windows.net;Database=ScreenSoundV0;User Id=screensound;Password=senha@123;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;";
+    private string connectionString = @"Data Source=localhost,1433;Initial Catalog=aluraV0;User Id=sa;Password=hUmV3bJjALTA9tWehwBh;Encrypt=False;TrustServerCertificate=True";
+    //private string connectionString = "Server=screensound-server-murilo.database.windows.net;Database=ScreenSoundV0;User Id=screensound;Password=senha@123;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;";
     public ScreenSoundContext(DbContextOptions options) : base(options)
     {
         
