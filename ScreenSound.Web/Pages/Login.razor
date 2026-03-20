@@ -1,6 +1,9 @@
 @page "/login"
 @using Microsoft.AspNetCore.Components.Authorization
+@using System.Web
 @inject AuthAPI AuthAPI
+@inject NavigationManager Navigation
+@attribute [AllowAnonymous]
 
 <MudPaper Class="px-8 pt-2 pb-4 mx-16 my-8" Justify="Justify.Center">
     <AuthorizeView>
@@ -36,8 +39,23 @@
     private string? email;
     private string? senha;
     
+    [SupplyParameterFromQuery]
+    public string? ReturnUrl { get; set; }
+    
+    protected override void OnInitialized()
+    {
+        var uri = new Uri(Navigation.Uri);
+        var query = HttpUtility.ParseQueryString(uri.Query);
+        ReturnUrl = query["ReturnUrl"];
+    }
+    
     private async Task FazerLogin()
     {
-        await AuthAPI.LoginAsync(email, senha);
+        var resposta = await AuthAPI.LoginAsync(email, senha);
+        if (resposta.Sucesso)
+        {
+            if (ReturnUrl is not null)
+                Navigation.NavigateTo(ReturnUrl);
+        }
     }
 }
