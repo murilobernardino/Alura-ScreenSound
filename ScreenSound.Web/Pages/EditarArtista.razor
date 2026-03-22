@@ -21,22 +21,28 @@
                       Required="true"
                       RequiredError="Campo obrigatório"/>
         
-        <div class="d-flex align-center justify-end mt-4">
+        <div class="d-flex align-center justify-space-between mt-4">
+
+            <MudRating 
+                @bind-SelectedValue="Classificacao"
+                @onclick="AvaliarArtista"/>
+            
             <MudButton Variant="Variant.Filled"
                        @onclick="Editar"
                        Color="Color.Info"
-                       Class="me-2">
+                       Class="ml-auto">
                 Salvar
             </MudButton>
             <MudButton Variant="Variant.Filled"
                        @onclick="Deletar"
                        Color="Color.Secondary"
-                       Class="me-2">
+                       Class="ml-3">
                 Deletar
             </MudButton>
             <MudButton Variant="Variant.Filled"
                        @onclick="Voltar"
-                       Color="Color.Primary">
+                       Color="Color.Primary"
+                       Class="ml-3">
                 Voltar
             </MudButton>
         </div>
@@ -45,6 +51,7 @@
 @code {
     private string? nome;
     private string? biografia;
+    public int Classificacao { get; set; }
     [Parameter]
     public string? NomeArtista { get; set; }
 
@@ -75,5 +82,10 @@
         var requestEdit = new ArtistaRequestEdit(Artista!.Id, nome!, biografia!, fotoPerfil:null);
         await artistasAPI.UpdateArtistaAsync(requestEdit);
         navigationManager.NavigateTo("/Artistas");
+    }
+
+    private async Task AvaliarArtista()
+    {
+        await artistasAPI.AvaliaArtistaAsync(Artista!.Id, Classificacao);
     }
 }

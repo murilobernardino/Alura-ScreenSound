@@ -3,6 +3,7 @@
 public class Artista 
 {
     public virtual ICollection<Musica> Musicas { get; set; }= new List<Musica>(); // Inicializa a coleção de músicas
+    public virtual ICollection<AvaliacaoArtista> Avaliacoes { get; set; } = new List<AvaliacaoArtista>(); // Inicializa a coleção de avaliações
 
     public Artista(string nome, string bio)
     {
@@ -19,6 +20,17 @@ public class Artista
     public void AdicionarMusica(Musica musica)
     {
         Musicas.Add(musica);
+    }
+
+    public void AdicionarNota(int pessoaId, int nota)
+    {
+        nota = Math.Clamp(nota, 1, 5); // Garante que a nota esteja entre 1 e 5
+        Avaliacoes.Add(new AvaliacaoArtista()
+        {
+            ArtistaId = this.Id, 
+            PessoaId = pessoaId, 
+            Nota = nota
+        });
     }
 
     public void ExibirDiscografia()
